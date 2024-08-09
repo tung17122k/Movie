@@ -4,7 +4,7 @@
 
 @layer base {
   body {
-    @apply px-5 bg-slate-900 font-body;
+    @apply px-5 text-white bg-slate-900 font-body;
   }
 }
 @layer components {
@@ -18,5 +18,15 @@
   }
   .banner .swiper {
     height: 100%;
+  }
+}
+/* pagination */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  .selected {
+    @apply text-primary;
   }
 }

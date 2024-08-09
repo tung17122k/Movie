@@ -8,6 +8,7 @@ import Header from "./component/layout/Header";
 import HomePage from "./pages/HomePage";
 import MoviesPage from "./pages/MoviesPage";
 import Main from "./component/layout/Main";
+import MovieDetailsPage from "./pages/MovieDetailsPage";
 function App() {
   return (
     <Fragment>
@@ -23,6 +24,10 @@ function App() {
             }
           ></Route>
           <Route path="/movies" element={<MoviesPage></MoviesPage>}></Route>
+          <Route
+            path="/movie/:movieId"
+            element={<MovieDetailsPage></MovieDetailsPage>}
+          ></Route>
         </Route>
       </Routes>
     </Fragment>

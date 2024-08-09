@@ -3,6 +3,7 @@ import { fetcher } from "../../config";
 import useSWR from "swr";
 import { useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay } from "swiper/modules";
 import "swiper/scss";
 
 const Banner = () => {
@@ -11,11 +12,19 @@ const Banner = () => {
     fetcher
   );
   const movie = data?.results;
-  console.log(movie);
+  // console.log(movie);
 
   return (
     <section className="banner h-[500px] page-container mb-20 overflow-hidden">
-      <Swiper grapCursor="true" slidesPerView={"auto"}>
+      <Swiper
+        grapCursor="true"
+        slidesPerView={"auto"}
+        modules={[Autoplay]}
+        autoplay={{
+          delay: 3000, // time in ms between slides
+          disableOnInteraction: false, // don't stop autoplay on user interaction
+        }}
+      >
         {movie?.length > 0 &&
           movie.map((item) => (
             <SwiperSlide key={item.id}>

@@ -10,11 +10,12 @@ const MovieList = ({ type = "now_playing" }) => {
     `https://api.themoviedb.org/3/movie/${type}?api_key=fa825ee09840f8cdebb90ff7d067f462`,
     fetcher
   );
+  // console.log(data);
   //   console.log(data);
   useEffect(() => {
     if (data && data.results) setMovie(data.results);
   }, [data]);
-  // console.log(movie);
+  console.log(movie);
 
   return (
     <div className="movie-list">
@@ -24,10 +25,10 @@ const MovieList = ({ type = "now_playing" }) => {
             <SwiperSlide key="item.id">
               <MovieCard
                 item={item}
-                title={item.title}
-                vote_average={item.vote_average}
-                release_date={item.release_date}
-                poster_path={item.poster_path}
+                // title={item.title}
+                // vote_average={item.vote_average}
+                // release_date={item.release_date}
+                // poster_path={item.poster_path}
               ></MovieCard>
             </SwiperSlide>
           ))}
