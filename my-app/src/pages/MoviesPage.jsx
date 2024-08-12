@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import MovieList from "../component/movies/MovieList";
-import { fetcher } from "../config";
+import { fetcher, tmdbAPI } from "@/config";
 import useSWR from "swr";
-import MovieCard from "../component/movies/MovieCard";
-import useDebound from "../hooks/UseDebound";
+import MovieCard from "@component/movies/MovieCard";
+import useDebound from "@/hooks/UseDebound";
 import ReactPaginate from "react-paginate";
 
 // https://api.themoviedb.org/3/search/movie
@@ -14,7 +13,8 @@ const itemsPerPage = 20;
 const MoviesPage = () => {
   const [nextPage, setNextPage] = useState(1);
   const [url, setUrl] = useState(
-    `https://api.themoviedb.org/3/movie/popular?api_key=fa825ee09840f8cdebb90ff7d067f462&page=${nextPage}`
+    // `https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&page=${nextPage}`
+    tmdbAPI.getMovieList("popular", nextPage)
   );
   const { data, error } = useSWR(url, fetcher);
   // if (!data) return null;
@@ -25,11 +25,13 @@ const MoviesPage = () => {
   useEffect(() => {
     if (filterDebound) {
       setUrl(
-        `https://api.themoviedb.org/3/search/movie?api_key=fa825ee09840f8cdebb90ff7d067f462&query=${filterDebound}&page=${nextPage}`
+        tmdbAPI.getSearch(filterDebound, nextPage)
+        // `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${filterDebound}&page=${nextPage}`
       );
     } else {
       setUrl(
-        `https://api.themoviedb.org/3/movie/popular?api_key=fa825ee09840f8cdebb90ff7d067f462&page=${nextPage}`
+        tmdbAPI.getMovieList("popular", nextPage)
+        // `https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&page=${nextPage}`
       );
     }
   }, [filterDebound, nextPage]);
@@ -41,19 +43,20 @@ const MoviesPage = () => {
   const [itemOffset, setItemOffset] = useState(0);
 
   useEffect(() => {
-    if (!data || !data.total_pages) return;
+    if (!data || !data.total_results) return;
 
-    setPageCount(Math.ceil(data.total_pages / itemsPerPage));
-    // itemOffset là số lượng item trong 1 page - 20 => check khởi tạo
+    setPageCount(Math.ceil(data.total_results / itemsPerPage));
     // console.log(itemOffset);
   }, [data, itemOffset]);
   // tinh ra so luong page dua vao total_page
   const handlePageClick = (event) => {
     const newOffset = (event.selected * itemsPerPage) % data.total_results;
+    console.log(newOffset);
     setItemOffset(newOffset);
     // console.log(event.selected);
     setNextPage(event.selected + 1);
   };
+  // console.log(data);
 
   return (
     <div className="py-10 page-container">
@@ -94,56 +97,6 @@ const MoviesPage = () => {
           ))}
       </div>
 
-      <div className="flex items-center justify-center hidden mt-10 gap-x-5">
-        <span
-          className="cursor-pointer"
-          onClick={() => setNextPage(nextPage - 1)}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            stroke="currentColor"
-            className="size-6"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
-            />
-          </svg>
-        </span>
-
-        {new Array(pageCount).fill(0).map((item, index) => (
-          <span
-            key={item.id}
-            className="inline-block px-4 py-2 leading-none bg-white rounded cursor-pointer text-slate-900"
-            onClick={() => setNextPage(index + 1)}
-          >
-            {index + 1}
-          </span>
-        ))}
-        <span
-          className="cursor-pointer"
-          onClick={() => setNextPage(nextPage + 1)}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            stroke="currentColor"
-            className="size-6"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
-            />
-          </svg>
-        </span>
-      </div>
       <div className="mt-10 abc">
         <ReactPaginate
           breakLabel="..."

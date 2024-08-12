@@ -1,16 +1,16 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { useParams } from "react-router-dom";
 import useSWR from "swr";
-import { fetcher } from "../config";
+import { fetcher, tmdbAPI } from "@/config";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/scss";
-import MovieCard from "../component/movies/MovieCard";
+import MovieCard from "@component/movies/MovieCard";
+
+// MOVIE DETAILS PAGE
+
 const MovieDetailsPage = () => {
   const { movieId } = useParams();
-  const { data, error } = useSWR(
-    `https://api.themoviedb.org/3/movie/${movieId}?api_key=fa825ee09840f8cdebb90ff7d067f462`,
-    fetcher
-  );
+  const { data } = useSWR(tmdbAPI.getMovieDetails(movieId), fetcher);
   if (!data) return null;
   const { backdrop_path, poster_path, title, genres, overview } = data;
   console.log(data);
@@ -22,13 +22,13 @@ const MovieDetailsPage = () => {
         <div
           className="w-full h-full bg-no-repeat bg-cover"
           style={{
-            backgroundImage: `url(https://image.tmdb.org/t/p/original/${backdrop_path})`,
+            backgroundImage: `url(${tmdbAPI.imageOriginal(backdrop_path)})`,
           }}
         ></div>
       </div>
       <div className="w-full h-[500px] max-w-[800px] mx-auto -mt-[200px] relative z-10 pb-10">
         <img
-          src={`https://image.tmdb.org/t/p/original/${poster_path}`}
+          src={`${tmdbAPI.imageOriginal(poster_path)}`}
           alt=""
           className="object-cover w-full h-full rounded-xl"
         />
@@ -58,11 +58,13 @@ const MovieDetailsPage = () => {
   );
 };
 
+// MOVIE CREDIT
+
 function MovieCredit() {
   // https://api.themoviedb.org/3/movie/{movie_id}/credits
   const { movieId } = useParams();
   const { data, error } = useSWR(
-    `https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=fa825ee09840f8cdebb90ff7d067f462`,
+    `${tmdbAPI.getMovieMeta(movieId, "credits")}`,
     fetcher
   );
   // console.log(data);
@@ -78,7 +80,7 @@ function MovieCredit() {
         {filteredCast.slice(0, 4).map((item) => (
           <div className="cast-item" key={item.id}>
             <img
-              src={`https://image.tmdb.org/t/p/original/${item.profile_path}`}
+              src={`${tmdbAPI.imageOriginal(item.profile_path)}`}
               className="w-full h-[350px] object-cover rounded-lg"
               alt=""
             />
@@ -90,19 +92,21 @@ function MovieCredit() {
   );
 }
 
+// MOVIE VIDEO
+
 function MovieVideo() {
   //https://api.themoviedb.org/3/movie/{movie_id}/videos
   //<iframe width="1280" height="720" src="https://www.youtube.com/embed/4oiVSLWV5G8" title="Đi Giữa Trời Rực Rỡ Tập 7 | Phim truyền hình VTV3 hay nhất 2024 | Full 4K Ultra HD | SK Pictures" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
   const { movieId } = useParams();
-  const { data, error } = useSWR(
-    `https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=fa825ee09840f8cdebb90ff7d067f462`,
+  const { data } = useSWR(
+    `${tmdbAPI.getMovieMeta(movieId, "videos")}`,
     fetcher
   );
   console.log(data);
   if (!data) return null;
   const { results } = data;
 
-  if (results.length <= 0 || !results) return null;
+  if (results?.length <= 0 || !results) return null;
 
   return (
     <div className="py-10">
@@ -132,17 +136,19 @@ function MovieVideo() {
   );
 }
 
+// MOVIE SIMILAR
+
 function MovieSimilar() {
   //https://api.themoviedb.org/3/movie/{movie_id}/similar
   const { movieId } = useParams();
   const { data, error } = useSWR(
-    `https://api.themoviedb.org/3/movie/${movieId}/similar?api_key=fa825ee09840f8cdebb90ff7d067f462`,
+    `${tmdbAPI.getMovieMeta(movieId, "similar")}`,
     fetcher
   );
   console.log(data);
   if (!data) return null;
   const { results } = data;
-  if (results.length <= 0 || !results) return null;
+  if (results?.length <= 0 || !results) return null;
   const filterResults = results.filter((item) => item.poster_path !== null);
   return (
     <div className="py-10">

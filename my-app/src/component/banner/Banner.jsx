@@ -5,10 +5,13 @@ import { useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import "swiper/scss";
+import Button from "../button/Button";
+import { useNavigate } from "react-router-dom";
+import { apiKey } from "../../config";
 
 const Banner = () => {
   const { data, error, isLoading } = useSWR(
-    `https://api.themoviedb.org/3/movie/upcoming?api_key=fa825ee09840f8cdebb90ff7d067f462`,
+    `https://api.themoviedb.org/3/movie/upcoming?api_key=${apiKey}`,
     fetcher
   );
   const movie = data?.results;
@@ -35,9 +38,9 @@ const Banner = () => {
     </section>
   );
 };
-
 function BannerItem({ item }) {
-  const { title, poster_path } = item;
+  const { title, poster_path, id } = item;
+  const navigate = useNavigate();
   return (
     <div className="relative w-full h-full rounded-lg">
       <div className="absolute inset-0 overlay bg-gradient-to-t from-[rgba(0,0,0,0.5)] to-[rgba(0,0,0,0.5)] rounded-lg"></div>
@@ -53,9 +56,10 @@ function BannerItem({ item }) {
           <span className="p-4 border border-white rounded-md">Action</span>
           <span className="p-4 border border-white rounded-md">Drama</span>
         </div>
-        <button className="px-6 py-3 font-medium text-white rounded-lg bg-primary">
+
+        <Button onClick={() => navigate(`/movie/${id}`)} className="">
           Watch now
-        </button>
+        </Button>
       </div>
     </div>
   );
