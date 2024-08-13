@@ -7,6 +7,7 @@ import Banner from "./component/banner/Banner";
 import Header from "./component/layout/Header";
 // import MoviesPage from "./pages/MoviesPage";
 import Main from "./component/layout/Main";
+import NotFoundPage from "./pages/NotFoundPage";
 // import HomePage from "./pages/HomePage";
 // import MovieDetailsPage from "./pages/MovieDetailsPage";
 
@@ -33,6 +34,7 @@ function App() {
               path="/movie/:movieId"
               element={<MovieDetailsPage></MovieDetailsPage>}
             ></Route>
+            <Route path="*" element={<NotFoundPage></NotFoundPage>}></Route>
           </Route>
         </Routes>
       </Suspense>
