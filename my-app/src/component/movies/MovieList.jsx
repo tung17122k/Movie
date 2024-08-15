@@ -4,13 +4,14 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/scss";
 import useSWR from "swr";
 import { fetcher, tmdbAPI } from "@/config";
+import PropType from "prop-types";
 const MovieList = ({ type = "now_playing" }) => {
   const [movie, setMovie] = useState([]);
   const { data } = useSWR(`${tmdbAPI.getMovieList(type)}`, fetcher);
   useEffect(() => {
     if (data && data.results) setMovie(data.results);
   }, [data]);
-  console.log(movie);
+  // console.log(movie);
 
   return (
     <div className="movie-list">
@@ -30,6 +31,9 @@ const MovieList = ({ type = "now_playing" }) => {
       </Swiper>
     </div>
   );
+};
+MovieList.PropType = {
+  type: PropType.string.isRequired,
 };
 
 export default MovieList;
